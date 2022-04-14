@@ -1,0 +1,70 @@
+image: docker:git
+
+variables:
+  IMAGE_NAME_WEB: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:0.1.$CI_PIPELINE_IID
+  DOCKER_HOST: tcp://docker:2375
+  #
+  # This will instruct Docker not to start over TLS.
+  DOCKER_TLS_CERTDIR: ''
+  GIT_SUBMODULE_STRATEGY: recursive
+
+.tags: &tags
+  tags:
+    - bigin-ci-large
+
+stages:
+  - build
+  - deploy
+
+build-qa:
+  <<: *tags
+  stage: build
+  services:
+    - docker:19.03.1-dind
+  script:
+    - docker info
+    - docker build --build-arg NUXT_ENV_API_URL=$NUXT_ENV_API_URL --build-arg NODE_ENV=$NODE_ENV --build-arg NUXT_HOST=$NUXT_HOST --build-arg NUXT_ENV_SYSTEM_ID=$NUXT_ENV_SYSTEM_ID --build-arg NUXT_ENV_SENTRY_DSN=$NUXT_ENV_SENTRY_DSN -t $IMAGE_NAME_WEB .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $IMAGE_NAME_WEB
+  variables:
+    GIT_STRATEGY: fetch
+  only:
+    - qa
+
+build-uat:
+  <<: *tags
+  stage: build
+  services:
+    - docker:19.03.1-dind
+  script:
+    - docker info
+    - docker build --build-arg NUXT_ENV_API_URL=$NUXT_ENV_UAT_API_URL --build-arg NODE_ENV=$NODE_ENV --build-arg NUXT_HOST=$NUXT_HOST --build-arg NUXT_ENV_SYSTEM_ID=$NUXT_ENV_SYSTEM_ID --build-arg NUXT_ENV_SENTRY_DSN=$NUXT_ENV_SENTRY_DSN -t $IMAGE_NAME_WEB .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $IMAGE_NAME_WEB
+  variables:
+    GIT_STRATEGY: fetch
+  only:
+    - uat
+
+
+deploy:
+  stage: deploy
+  before_script:
+    - apk update && apk add curl
+    - wget https://github.com/mikefarah/yq/releases/download/v4.13.2/yq_linux_amd64.tar.gz -O - | tar xz && mv yq_linux_amd64 /usr/bin/yq
+  variables:
+    GIT_STRATEGY: none
+  except:
+    - development
+  script:
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/bigin/yummi/deployment.git
+    - cd deployment/$(echo $CI_COMMIT_REF_SLUG | awk '{print tolower($0)}') 
+    - export IMAGETAG=0.1.$CI_PIPELINE_IID
+    - yq e -i '.partner.imageTag = strenv(IMAGETAG)' values.yaml
+    - git add .
+    - git config --global user.email "tech@bigin.vn"
+    - git config --global user.name "ci_committer"
+    - git commit -m "updated partner image tag to $IMAGETAG"
+    - git push http://fleetfull:${CI_GIT_TOKEN}@gitlab.com/bigin/yummi/deployment.git HEAD:main
+  tags:
+    - bigin-ci-secure-deploy

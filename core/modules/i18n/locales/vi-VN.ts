@@ -1,0 +1,27 @@
+export default {
+  vuelidate: {
+    messages: {
+      alpha: '{0} chỉ có thể chứa kí tự chữ',
+      alphaNum: '{0} chỉ có thể chứa kí tự chữ và/hoặc số',
+      between: '{0} phải bắt đầu từ {1} đến {2}',
+      containsAlphaAndNum: '{0} phải chứa cả kí tự chữ và số',
+      containsCapital: '{0} phải chứa kí tự chữ viết hoa',
+      containsSpecial: '{0} phải chứa kí tự đặc biệt',
+      decimal: '{0} chỉ có thể chứa kí tự số thập phân',
+      email: '{0} chưa được nhập đúng định dạng email',
+      existed: '{0} đã tồn tại',
+      integer: '{0} chỉ có thể chứa kí tự số nguyên',
+      notExisted: '{0} chưa tồn tại',
+      numeric: '{0} chỉ có thể chứa kí tự số',
+      minLength: '{0} phải có ít nhất {1} kí tự',
+      maxValue: '{0} không thể lớn hơn {1}',
+      minValue: '{0} phải ít nhất là {1}',
+      maxLength: 'Rất tiếc, {0} quá dài ({1} kí tự tối đa)',
+      required: '{0} đang bị để trống',
+      sameAs: '{0} và {1} chưa trùng khớp',
+      url: '{0} chưa được nhập đúng định dạng URL',
+      ipAddress: '{0} không phải là một địa chỉ IP hợp lệ',
+      fullName: 'Có thể không phải là tên thật của bạn',
+    },
+  },
+}

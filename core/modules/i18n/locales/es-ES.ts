@@ -1,0 +1,27 @@
+export default {
+  vuelidate: {
+    messages: {
+      alpha: '[ES] {0} must contain only alphabet characters',
+      alphaNum: '[ES] {0} must contain only alphabet and/or numeric characters',
+      between: '[ES] {0} must lie between {1} and {2}',
+      containsAlphaAndNum: '[ES] {0} must contain alphanumerics',
+      containsCapital: '[ES] {0} must contain capital characters',
+      containsSpecial: '[ES] {0} must contain special characters',
+      decimal: '[ES] {0} must contain only decimal characters',
+      email: '[ES] {0} was not in email format',
+      existed: '[ES] {0} is existed',
+      integer: '[ES] {0} must contain only integer characters',
+      notExisted: '[ES] {0} is not existed',
+      numeric: '[ES] {0} must contain only numeric characters',
+      minLength: '[ES] {0} must contain at least {1} characters',
+      minValue: '[ES] {0} must at least {1}',
+      maxValue: '{0} can not be greater than {1}',
+      maxLength: '[ES] Sorry, {0} is too long ({1} characters at max)',
+      required: '[ES] {0} is missing',
+      sameAs: '[ES] There is an mismatch in {0} and {1}',
+      url: '[ES] {0} was not in URL format',
+      ipAddress: '[ES] {0} was not a valid IP address',
+      fullName: '[ES]] This could not be your real name',
+    },
+  },
+}

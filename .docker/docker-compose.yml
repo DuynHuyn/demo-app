@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  yummi-partner-app:
+    build:
+      context: ..
+      args:
+        NODE_ENV: production
+        NUXT_HOST: 0.0.0.0
+        NUXT_ENV_API_URL: https://api.yummi-qa.eks.bigin.top/
+        NUXT_ENV_SYSTEM_ID: 2
+    image: yummi-partner-app:prod
+    container_name: yummi-partner-app
+    # restart: always
+
+    ports:
+      - '3000:3000'
